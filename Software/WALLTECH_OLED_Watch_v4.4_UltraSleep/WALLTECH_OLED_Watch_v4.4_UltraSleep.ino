@@ -36,9 +36,9 @@ RTC_DS1307 RTC;
 // Create the MCP9808 temperature sensor object
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 
-boolean timeSet = true;
+boolean timeSet = false;
 //************NOTE************
-// After uploading, change the above line to false
+// After uploadings set to true, change the above line to false
 // and re-upload. This is very
 // important because without it,
 // the time will reset to the original set
@@ -152,6 +152,8 @@ void setup() {
 }
 
 void loop() {
+  
+  
 
   DateTime now = RTC.now();// the time variables are redefined
 
@@ -434,6 +436,7 @@ void loop() {
     oled.setCursor(11, 0);
     oled.print(F("Temperature:"));
     oled.print(getTemp());
+    
     oled.print('F');
     for (int xaxis = 0; xaxis < 128; xaxis++)
     {
@@ -908,7 +911,8 @@ void checkBatteryLevel()
 double getTemp()
 {
   f = tempsensor.readTempC() * 1.8 + 32;
-  return f - 7.0; //wearing the watch and heating due to VCC adds ~7F to the reading, so subtract it
+  if(f-7.0 != 24.89) return f - 7.0; //wearing the watch and heating due to VCC adds ~7F to the reading, so subtract it
+  else getTemp();
 }
 
 void adjustBrightness()
