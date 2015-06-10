@@ -58,7 +58,7 @@ int timemillisecond;
 byte buttonState_l;
 byte buttonState_c;
 byte buttonState_r;
-const byte PROGMEM debounce = 20;
+const byte PROGMEM debounce = 100;
 
 const byte PROGMEM charge = 3;
 const byte PROGMEM full = A3;
