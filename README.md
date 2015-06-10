@@ -1,4 +1,5 @@
 WALLTECH_OLED_Watch_v4.4_UltraSleep
+===================================
 
 v4.4 of the WΛLLTΞCH OLED Watch fixes previous design errors, thins the watch to a mere 13mm in its case, and adds an ambient light sensor for adaptive display brightness. It incorporates a .96" OLED display, a rechargeable 250mAh LiPo battery that lasts up to 2.5 weeks thanks to the watch’s UltraSleep mode, a FemtoduinoUSB with micro usb charging and programming, accurate temperature sensing, ambient light level detection, 3 input buttons, 3 indicator LEDs, and an on/off switch.
 
