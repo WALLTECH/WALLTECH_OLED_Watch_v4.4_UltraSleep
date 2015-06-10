@@ -7,3 +7,9 @@ To build one yourself, either download the Gerber files to have a PCB made with 
 To program the watch once you've built it, you can download the Arduino libraries in the "Software" folder and compile and upload the watch sketch as an Arduino UNO on the serial port that appears when you plug it in, or you can use codebender.cc to program the watch with one click in browser! Cool! - https://codebender.cc/sketch:122702
 
 Enjoy your new watch! If the DIY approach isn't for you (yet), I might sell these as kits if there's enough interest. If you'd like to see this as a kit, email me at john@walltech.cc!
+
+WΛLLTΞCH CC Licenses
+
+The WΛLLTΞCH OLED Watch by WΛLLTΞCH Electronics is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. http://creativecommons.org/licenses/by-nc-sa/4.0/
+
+WΛLLTΞCH images and logos by WΛLLTΞCH Electronics are licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. http://creativecommons.org/licenses/by-nc-nd/4.0/
