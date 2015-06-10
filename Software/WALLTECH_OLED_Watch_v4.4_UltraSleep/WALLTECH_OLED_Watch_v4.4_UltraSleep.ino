@@ -916,8 +916,7 @@ void checkBatteryLevel()
 double getTemp()
 {
   f = tempsensor.readTempC() * 1.8 + 32;
-  if(f-7.0 != 24.89) return f - 7.0; //wearing the watch and heating due to VCC adds ~7F to the reading, so subtract it
-  else getTemp();
+  if(f-7.0 >= 32) return f - 7.0; //wearing the watch and heating due to VCC adds ~7F to the reading, so subtract it
 }
 
 void adjustBrightness()
