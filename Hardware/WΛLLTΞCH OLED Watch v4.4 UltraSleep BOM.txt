@@ -1,0 +1,23 @@
+WΛLLTΞCH OLED Watch v4.4 UltraSleep BOM
+FemtoduinoUSB x1- http://femto.io/products/femtoduino
+.96” I2C OLED Display x1
+LIPO BATTERY x1 recommended - http://www.mouser.com/ProductDetail/Renata/ICP521630PM
+PCB x1 - https://oshpark.com/shared_projects/jhyZbj4B
+DPDT 2x3 .1” SWITCH
+DIODE SCHOTTKY 100V 2A SMB x1 (SPECIFIC! ->) - http://www.digikey.com/product-detail/en/STPS2H100U/497-6580-1-ND/1865308
+4.7 uF 0603 CAP x2 C1,C2
+4K (4.22K) 0603 RES x1 R2 
+10K 0603 RES x1 R1
+DS1338 SOIC-8 x1
+32.768 kHz CRYSTAL x1
+MCP9808 MSOP-8 x1
+TEMT6000 x1
+MCP73831T-2ACI/OTCT-ND SOT-23-5 x1
+BLUE LED 0805 x1 - v (in this order down the PCB)
+GREEN LED 0805 x1
+ORANGE LED 0805 x1
+6mmx6mm TACT SWITCH x3
+.1” and .05” HEADERS
+CR1220 COIN CELL x1
+12mm SMD COIN CELL HOLDER x1
+iPOD NANO 6th GEN WATCHBAND (or similar) x1 recommended - http://www.dxsoul.com/product/901051397#.VXelXFVVikp
