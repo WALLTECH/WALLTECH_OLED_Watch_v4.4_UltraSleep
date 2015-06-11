@@ -8,26 +8,26 @@
  *     \|____________|\|__|\|__|\|_______|\|_______|\|__|  \|_______|\|_______|\|__|\|__|
  *
  * This is the default code for the WΛLLTΞCH OLED Watch v4.4
- * 
+ *
  * Designed specifically to work with the WΛLLTΞCH OLED Watch v4.4:
  * ----> http://www.walltech.cc/oled-watch/
- * 
- * WΛLLTΞCH invests time and resources providing this open source code, 
+ *
+ * WΛLLTΞCH invests time and resources providing this open source code,
  * please support WΛLLTΞCH and open-source hardware by donating any amount!
  * https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LrIWifBuf102Rn7Ang7qJLttsEWICxRtd9iYW6zG0OBBt_zN2z6srd7XQXa&dispatch=5885d80a13c0db1f8e263663d3faee8d6cdb53fcfca2b5941339e576d7e42259
- * 
- * Written by John Wall for WΛLLTΞCH.  
+ *
+ * Written by John Wall for WΛLLTΞCH.
  * Please observe the CC license below and attribute WΛLLTΞCH in any reused code. Thanks!
- * 
+ *
  * WΛLLTΞCH CC Licenses
  * ====================
- * The WΛLLTΞCH OLED Watch by WΛLLTΞCH Electronics is licensed under a 
- * Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. 
+ * The WΛLLTΞCH OLED Watch by WΛLLTΞCH Electronics is licensed under a
+ * Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  *
- * WΛLLTΞCH images and logos by WΛLLTΞCH Electronics are licensed under a 
- * Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. 
- * http://creativecommons.org/licenses/by-nc-nd/4.0/ 
+ * WΛLLTΞCH images and logos by WΛLLTΞCH Electronics are licensed under a
+ * Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * http://creativecommons.org/licenses/by-nc-nd/4.0/
  *****************************************************************************************/
 #include <avr/sleep.h>
 #include <Wire.h>// Including the necessary libraries
@@ -157,8 +157,8 @@ void setup() {
 }
 
 void loop() {
-  
-  
+
+
 
   DateTime now = RTC.now();// the time variables are redefined
 
@@ -170,8 +170,8 @@ void loop() {
   {
     timehour = 12;
   }
-  
-  if(brightnessLevel == 5) adjustBrightness();
+
+  if (brightnessLevel == 5) adjustBrightness();
 
   if (now.second() % 2 == 0 && point == 0)
   {
@@ -181,18 +181,17 @@ void loop() {
     {
       temperature[graphPosition] = (byte)temp;
       graphPosition++;
+
+      if (graphPosition > 127)
+      {
+        graphPosition = 0;
+        memset(temperature, -1, sizeof(temperature));
+      }
+      if ((byte)temp < graphMin ) graphMin = (byte)temp;
+      if ((byte)temp > graphMax) graphMax = (byte)temp;
+
+      point++;
     }
-
-    if (graphPosition > 127)
-    {
-      graphPosition = 0;
-      memset(temperature, -1, sizeof(temperature));
-    }
-    if ((byte)temp < graphMin) graphMin = (byte)temp;
-    if ((byte)temp > graphMax) graphMax = (byte)temp;
-
-    point++;
-
   }
 
   if (now.second() % 2 == 1) point = 0;
@@ -441,7 +440,7 @@ void loop() {
     oled.setCursor(11, 0);
     oled.print(F("Temperature:"));
     oled.print(getTemp());
-    
+
     oled.print('F');
     for (int xaxis = 0; xaxis < 128; xaxis++)
     {
@@ -673,7 +672,7 @@ void loop() {
     oled.print(brightnessLevel);
     oled.drawBitmap(46, 14, brightnessIcon[brightnessLevel] , 36 , 36 , WHITE);
     if (brightnessLevel == 1) oled.setBrightness(1);
-    else if(brightnessLevel < 5) oled.setBrightness((brightnessLevel * 50));
+    else if (brightnessLevel < 5) oled.setBrightness((brightnessLevel * 50));
   }
 
   if (face != 6)// these reset variables used to display the icons when the face changes
@@ -922,7 +921,7 @@ double getTemp()
 void adjustBrightness()
 {
   int lightReading = analogRead(ambientLightSensor);
-  byte mappedLevel = map(lightReading, 0, (readVcc()/1000*1024/5), 0, 255);
+  byte mappedLevel = map(lightReading, 0, (readVcc() / 1000 * 1024 / 5), 0, 255);
   oled.setBrightness(mappedLevel);
 }
 
