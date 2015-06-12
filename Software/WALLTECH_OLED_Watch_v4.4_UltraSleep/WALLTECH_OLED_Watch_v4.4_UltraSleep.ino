@@ -99,7 +99,7 @@ byte setMinute;
 byte setHour;
 byte setDay = 1;
 byte setMonth = 1;
-byte setYear = 2014;
+byte setYear = 2015;
 boolean set = false;
 byte setSelect = 0;
 
@@ -307,6 +307,7 @@ void loop() {
     oled.print(' ');
     oled.print(percent);
     oled.print('%');
+    
   }
 
   else if (face == 2) // printing each number of the time as the corresponding bitmap of the font
@@ -750,45 +751,46 @@ void loop() {
     oled.fullOn();
   }
 
-  ////////////////////////////////////////////////////////
-  while (readVcc() > 4200) // when the watch senses 5v of USB on its VCC (plugged in)
+    ////////////////////////////////////////////////////////
+  while(readVcc() > 4200)// when the watch senses 5v of USB on its VCC (plugged in)
   {
-
+  	
     oled.setBrightness(255);
-
+    lipostat = analogRead(A2);
+  	
     if (lipostat < 512)// if the battery charge status is low, it's charging
     {
       oled.clearDisplay();
-
+      
       oled.drawBitmap(48, 16, battplug, 32, 32, WHITE);// show the plugged in animation and USB voltage
-      oled.setCursor(48, 57);
+      oled.setCursor(48,57);
       oled.print(readVcc());
       oled.print(F("mV"));
-      analogWrite(charge, brightness);
+      analogWrite(charge, brightness);    
       // change the brightness for next time through the loop:
       brightness = brightness + fadeAmount;
-      // reverse the direction of the fading at the ends of the fade:
+      // reverse the direction of the fading at the ends of the fade: 
       if (brightness == 0 || brightness == 50) {
-        fadeAmount = -fadeAmount ;
-      }
+        fadeAmount = -fadeAmount ; 
+      }     
       digitalWrite(full, LOW);
     }
 
-    else if (lipostat > 512) // if the battery charging state is high, and it's been plugged in and charging before this, show full
+    else if(lipostat > 512)// if the battery charging state is high, and it's been plugged in and charging before this, show full
     {
       oled.clearDisplay();
       oled.drawBitmap(48, 16, fullbatt , 32, 32, WHITE);
       digitalWrite(full, HIGH);
-      digitalWrite(charge, LOW);
+      digitalWrite(charge, LOW); 
     }
-    oled.display();
-    oled.clearDisplay();
+   oled.display();
+   oled.clearDisplay();
   }
-
-  if (readVcc() < 4200) // when not plugged in, keep the charging/full LEDs off
+  
+  if(readVcc() < 4200)// when not plugged in, keep the charging/full LEDs off
   {
-    digitalWrite(charge, LOW);
-    digitalWrite(full, LOW);
+    digitalWrite(charge, LOW); 
+    digitalWrite(full, LOW); 
   }
 
   while (percent < 5)// if the power gets low, the battery dead animation shows
@@ -908,7 +910,7 @@ int readVcc() {
 
 void checkBatteryLevel()
 {
-  percent = map(readVcc(), 3000, 3780, 0, 100);
+  percent = map(readVcc(), 3000, 3800, 0, 100);
   if (percent > 100) percent = 100;
 }
 
