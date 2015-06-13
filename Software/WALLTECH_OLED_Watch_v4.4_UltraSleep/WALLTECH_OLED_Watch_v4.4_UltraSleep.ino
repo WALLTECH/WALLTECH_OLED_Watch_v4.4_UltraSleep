@@ -109,6 +109,7 @@ byte face = 1;
 const byte PROGMEM facenum = 9;
 
 byte brightnessLevel = 5;
+byte brightnessValue;
 byte ambientLightSensor = A6;
 
 long sleepMillis;
@@ -157,8 +158,6 @@ void setup() {
 }
 
 void loop() {
-
-
 
   DateTime now = RTC.now();// the time variables are redefined
 
@@ -666,14 +665,19 @@ void loop() {
         brightnessLevel = 1;
       }
     }
-
-    oled.setCursor(27, 56);
+    
+    if(brightnessLevel < 5)
+    {
+      brightnessValue = 85*(brightnessLevel-1);
+    }
+    
+    oled.setCursor(6, 56);
     oled.setTextSize(1);
     oled.print(F("Brightness: "));
-    oled.print(brightnessLevel);
+    oled.print(brightnessValue);
+    oled.print(F("/255"));
     oled.drawBitmap(46, 14, brightnessIcon[brightnessLevel] , 36 , 36 , WHITE);
-    if (brightnessLevel == 1) oled.setBrightness(1);
-    else if (brightnessLevel < 5) oled.setBrightness((brightnessLevel * 50));
+    oled.setBrightness(brightnessValue);
   }
 
   if (face != 6)// these reset variables used to display the icons when the face changes
@@ -923,8 +927,8 @@ double getTemp()
 void adjustBrightness()
 {
   int lightReading = analogRead(ambientLightSensor);
-  byte mappedLevel = map(lightReading, 0, (readVcc() / 1000 * 1024 / 5), 0, 255);
-  oled.setBrightness(mappedLevel);
+  brightnessValue = map(lightReading, 0, (readVcc() / 1000 * 1024 / 5), 0, 255);
+  oled.setBrightness(brightnessValue);
 }
 
 void wakeUpNow()// here the interrupt is handled after wakeup
