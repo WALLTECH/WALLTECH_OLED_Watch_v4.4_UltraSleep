@@ -29,9 +29,10 @@
  * Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
  * http://creativecommons.org/licenses/by-nc-nd/4.0/
  *****************************************************************************************/
-#include <avr/sleep.h>
 #include <Wire.h>// Including the necessary libraries
+#include <avr/sleep.h>
 #include <GOFi2cOLED.h>// This library can be found here - http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)
+
 #include "RTClib.h"//These are Adafruit libraries, support them at www.adafruit.com!
 #include "Adafruit_MCP9808.h"
 #include "bitmaps.h"
@@ -41,7 +42,7 @@ RTC_DS1307 RTC;
 // Create the MCP9808 temperature sensor object
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 
-boolean timeSet = false;
+boolean timeSet = true;
 //************NOTE************
 // After uploadings set to true, change the above line to false
 // and re-upload. This is very
@@ -113,15 +114,15 @@ byte brightnessValue;
 byte ambientLightSensor = A6;
 
 long sleepMillis;
-int wakeTime = 10000;//The time the watch stays awake before going into sleep mode in milliseconds
+int wakeTime = 5000;//The time the watch stays awake before going into sleep mode in milliseconds
 
 byte A = 1;
 byte B = 1;
 byte C = 1;
 byte D = 1;
 
-void setup() {
-
+void setup()
+{
   oled.init(0x3c);// initiate the screen at its address
   oled.clearDisplay();
 
@@ -157,8 +158,8 @@ void setup() {
   checkBatteryLevel();
 }
 
-void loop() {
-
+void loop()
+{
   DateTime now = RTC.now();// the time variables are redefined
 
   timehour   = now.hour();
@@ -226,6 +227,7 @@ void loop() {
   {
     face = facenum;
   }
+  
   if (face > facenum)
   {
     face = 1;
@@ -237,15 +239,9 @@ void loop() {
     {
       displayNum(18, 18, timehour); // print the hour's number
 
-      if (now.second() % 2 == 0) // flash the colon once a second
-      {
-        oled.drawBitmap(49, 23, fontcolon, 3, 21, WHITE);
-      }
+      if (now.second() % 2 == 0) oled.drawBitmap(49, 23, fontcolon, 3, 21, WHITE);// flash the colon once a second
 
-      else
-      {
-        oled.drawRect(49, 23, 3, 21, BLACK);
-      }
+      else oled.drawRect(49, 23, 3, 21, BLACK);
 
       displayNum(56, 18, timeminute / 10);
       displayNum(87, 18, timeminute % 10);
@@ -256,15 +252,9 @@ void loop() {
       displayNum(0, 18, timehour / 10);
       displayNum(31, 18, timehour % 10);
 
-      if (now.second() % 2 == 0)
-      {
-        oled.drawBitmap(61, 23, fontcolon, 3, 21, WHITE);
-      }
+      if (now.second() % 2 == 0) oled.drawBitmap(61, 23, fontcolon, 3, 21, WHITE);
 
-      else
-      {
-        oled.drawRect(61, 23, 3, 21, BLACK);
-      }
+      else oled.drawRect(61, 23, 3, 21, BLACK);
 
       displayNum(69, 18, timeminute / 10);
       displayNum(100, 18, timeminute % 10);
@@ -272,7 +262,7 @@ void loop() {
 
     oled.setCursor(14, 57); // set cursor and print the date
     oled.setTextSize(1);
-
+    
     switch (now.dayOfWeek()) {
       case 0:
         oled.print(F("Sun "));
@@ -306,7 +296,7 @@ void loop() {
     oled.print(' ');
     oled.print(percent);
     oled.print('%');
-    
+
   }
 
   else if (face == 2) // printing each number of the time as the corresponding bitmap of the font
@@ -382,11 +372,9 @@ void loop() {
 
     else if (timeminute >= 20 && timeminute % 10 == 0)
     {
-
       textNum(0, 24, timehour);
 
       textNum(0, 48, timeminute);
-
     }
 
     else if (timeminute > 20 && timeminute % 10 != 0)
@@ -396,7 +384,6 @@ void loop() {
       textNum(0, 32, (timeminute / 10) * 10);
 
       textNum(0, 48, timeminute % 10);
-
     }
 
   }
@@ -442,10 +429,12 @@ void loop() {
     oled.print(getTemp());
 
     oled.print('F');
+    
     for (int xaxis = 0; xaxis < 128; xaxis++)
     {
       if ((int)temperature[xaxis] != -1) oled.drawPixel(xaxis, map((int)temperature[xaxis], graphMin, graphMax, 63, 8), WHITE);
     }
+    
     oled.setCursor(0, 9);
     oled.print(graphMax);
     oled.print('F');
@@ -470,28 +459,27 @@ void loop() {
     oled.setCursor(2, 25);
 
     // check for button press
-    stopButtonState = digitalRead(cbtn);                   // read the button state and store
+    stopButtonState = digitalRead(cbtn);// read the button state and store
 
-    if (stopButtonState == LOW && laststopButtonState == HIGH  &&  blinking == false)     // check for a high to low transition
-      // if true then found a new button press while clock is not running - start the clock
-    {
-      startTime = millis();                                   // store the start time
-      blinking = true;                                     // turn on blinking while timing
-      delay(5);                                               // short delay to debounce switch
-      laststopButtonState = stopButtonState;                          // store stopButtonState in laststopButtonState, to compare next time
+    if (stopButtonState == LOW && laststopButtonState == HIGH  &&  blinking == false)// check for a high to low transition
+    {                                                                                // if true then found a new button press while clock is not running - start the clock
+      startTime = millis();// store the start time
+      blinking = true;// turn on blinking while timing
+      delay(5);// short delay to debounce switch
+      laststopButtonState = stopButtonState;// store stopButtonState in laststopButtonState, to compare next time
       displayStopwatch(elapsedTime);
     }
 
-    else if (stopButtonState == LOW && laststopButtonState == HIGH && blinking == true)     // check for a high to low transition
-      // if true then found a new button press while clock is running - stop the clock and report
-    {
-      elapsedTime =   millis() - startTime;              // store elapsed time
-      blinking = false;                                  // turn off blinking, all done timing
-      laststopButtonState = stopButtonState;                     // store stopButtonState in laststopButtonState, to compare next time
+    else if (stopButtonState == LOW && laststopButtonState == HIGH && blinking == true)// check for a high to low transition
+    {                                                                                  // if true then found a new button press while clock is running - stop the clock and report
+      elapsedTime =   millis() - startTime;// store elapsed time
+      blinking = false;// turn off blinking, all done timing
+      laststopButtonState = stopButtonState;// store stopButtonState in laststopButtonState, to compare next time
     }
 
-    else {
-      laststopButtonState = stopButtonState;                         // store stopButtonState in laststopButtonState, to compare next time
+    else
+    {
+      laststopButtonState = stopButtonState;// store stopButtonState in laststopButtonState, to compare next time
 
       if (blinking == true)
       {
@@ -499,11 +487,9 @@ void loop() {
         displayStopwatch(runningTime);
       }
 
-      if (blinking == false)
-      {
-        displayStopwatch(elapsedTime);
-      }
+      if (blinking == false) displayStopwatch(elapsedTime);
     }
+    
     sleepMillis = millis();
     digitalWrite(13, LOW);
   }
@@ -546,12 +532,26 @@ void loop() {
       oled.setCursor(110, 55);
       oled.print(F("SET"));
 
-      oled.setCursor(22, 28);
+      oled.setCursor(18, 28);
+
+      if(setHour > 12)
+      {
+      oled.print((setHour-12) / 10);
+      oled.print((setHour-12) % 10);
+      }
+      else
+      {
       oled.print(setHour / 10);
       oled.print(setHour % 10);
+      }
+      
       oled.print(':');
+      
       oled.print(setMinute / 10);
       oled.print(setMinute % 10);
+      if(setHour > 12) oled.print(F("PM"));
+      else oled.print(F("AM")); 
+      
       oled.print(' ');
       oled.print(setMonth / 10);
       oled.print(setMonth % 10);
@@ -566,10 +566,9 @@ void loop() {
 
       else if (setSelect == 6) oled.drawLine(110, 63, 127, 63, WHITE);
 
-      if (setSelect > 0 && setSelect < 6)
-      {
-        oled.drawLine(((setSelect - 1) * 18) + 22, 36, ((setSelect - 1) * 18) + 33, 36, WHITE);
-      }
+      else if (setSelect > 0 && setSelect < 3) oled.drawLine(((setSelect - 1) * 18) + 18, 36, ((setSelect - 1) * 18) + 28, 36, WHITE);
+
+      else oled.drawLine(((setSelect - 1) * 18) + 30, 36, ((setSelect - 1) * 18) + 40, 36, WHITE);
 
       checkButtons();
 
@@ -577,20 +576,14 @@ void loop() {
       {
         delay(debounce);
         setSelect++;
-        if (setSelect > 6)
-        {
-          setSelect = 0;
-        }
+        if (setSelect > 6) setSelect = 0;
       }
 
       if (buttonState_l == LOW)
       {
         delay(debounce);
         setSelect--;
-        if (setSelect < 0)
-        {
-          setSelect = 6;
-        }
+        if (setSelect < 0) setSelect = 6;
       }
 
       if (buttonState_c == LOW) // when the center button is pressed, increment the value or set/exit
@@ -644,7 +637,6 @@ void loop() {
 
   else if (face == 9) // brightness adjustment
   {
-
     if (D == 1)
     {
       oled.drawBitmap(46, 14, brightnessIcon[0], 36, 36, WHITE);
@@ -660,17 +652,11 @@ void loop() {
     {
       delay(debounce);
       brightnessLevel++;
-      if (brightnessLevel > 5)
-      {
-        brightnessLevel = 1;
-      }
+      if (brightnessLevel > 5) brightnessLevel = 1;
     }
-    
-    if(brightnessLevel < 5)
-    {
-      brightnessValue = 85*(brightnessLevel-1);
-    }
-    
+
+    if (brightnessLevel < 5) brightnessValue = 85 * (brightnessLevel - 1);
+
     oled.setCursor(6, 56);
     oled.setTextSize(1);
     oled.print(F("Brightness: "));
@@ -680,39 +666,28 @@ void loop() {
     oled.setBrightness(brightnessValue);
   }
 
-  if (face != 6)// these reset variables used to display the icons when the face changes
-  {
-    A = 1;
-  }
+  if (face != 6) A = 1;// these reset variables used to display the icons when the face changes
 
   if (face != 7)
   {
     B = 1;
-    if ( (millis() - previousMillis > 500) ) {
-
+    if (millis() - previousMillis > 500) 
+    {
       if (blinking == true)
       {
         previousMillis = millis();// remember the last time we blinked the LED
 
         // if the LED is off turn it on and vice-versa.
-        if (value == LOW)
-          value = HIGH;
-        else
-          value = LOW;
+        if (value == LOW) value = HIGH;
+        else value = LOW;
         digitalWrite(13, value);
       }
     }
   }
 
-  if (face != 8)
-  {
-    C = 1;
-  }
+  if (face != 8) C = 1;
 
-  if (face != 9)
-  {
-    D = 1;
-  }
+  if (face != 9) D = 1;
 
   else digitalWrite(13, LOW);
 
@@ -755,46 +730,43 @@ void loop() {
     oled.fullOn();
   }
 
-    ////////////////////////////////////////////////////////
-  while(readVcc() > 4200)// when the watch senses 5v of USB on its VCC (plugged in)
+  ////////////////////////////////////////////////////////
+  while (readVcc() > 4200) // when the watch senses 5v of USB on its VCC (plugged in)
   {
-  	
     oled.setBrightness(255);
     lipostat = analogRead(A2);
-  	
+
     if (lipostat < 512)// if the battery charge status is low, it's charging
     {
       oled.clearDisplay();
-      
+
       oled.drawBitmap(48, 16, battplug, 32, 32, WHITE);// show the plugged in animation and USB voltage
-      oled.setCursor(48,57);
+      oled.setCursor(48, 57);
       oled.print(readVcc());
       oled.print(F("mV"));
-      analogWrite(charge, brightness);    
+      analogWrite(charge, brightness);
       // change the brightness for next time through the loop:
       brightness = brightness + fadeAmount;
-      // reverse the direction of the fading at the ends of the fade: 
-      if (brightness == 0 || brightness == 50) {
-        fadeAmount = -fadeAmount ; 
-      }     
+      // reverse the direction of the fading at the ends of the fade:
+      if (brightness == 0 || brightness == 50) fadeAmount = -fadeAmount ;
       digitalWrite(full, LOW);
     }
 
-    else if(lipostat > 512)// if the battery charging state is high, and it's been plugged in and charging before this, show full
+    else if (lipostat > 512) // if the battery charging state is high, and it's been plugged in and charging before this, show full
     {
       oled.clearDisplay();
       oled.drawBitmap(48, 16, fullbatt , 32, 32, WHITE);
       digitalWrite(full, HIGH);
-      digitalWrite(charge, LOW); 
+      digitalWrite(charge, LOW);
     }
-   oled.display();
-   oled.clearDisplay();
+    oled.display();
+    oled.clearDisplay();
   }
-  
-  if(readVcc() < 4200)// when not plugged in, keep the charging/full LEDs off
+
+  if (readVcc() < 4200) // when not plugged in, keep the charging/full LEDs off
   {
-    digitalWrite(charge, LOW); 
-    digitalWrite(full, LOW); 
+    digitalWrite(charge, LOW);
+    digitalWrite(full, LOW);
   }
 
   while (percent < 5)// if the power gets low, the battery dead animation shows
@@ -830,7 +802,7 @@ void textNum(int x, int y, int n)
   }
 }
 
-void displayNum(int x, int y, int n)
+void displayNum(int x, int y, int n) 
 {
   oled.drawBitmap(x, y, font[n], 25, 28, WHITE);
 }
@@ -927,7 +899,7 @@ double getTemp()
 void adjustBrightness()
 {
   int lightReading = analogRead(ambientLightSensor);
-  brightnessValue = map(lightReading, 0, (readVcc() / 1000 * 1024 / 5), 0, 255);
+  brightnessValue = map(lightReading, 0, 1023, 0, 255);
   oled.setBrightness(brightnessValue);
 }
 
@@ -978,13 +950,12 @@ void sleepNow()// here we put the arduino to sleep
    *             LOW        a low level triggers
    *             CHANGE     a change in level triggers
    *             RISING     a rising edge of a level triggers
-   *             FALLING    a falling edge of a level triggersWALLTECH_OLED_Watch_v4.4_UltraSleep
+   *             FALLING    a falling edge of a level triggers
    *
    * In all but the IDLE sleep modes only LOW can be used.
    */
 
-  attachInterrupt(0, wakeUpNow, LOW); // use interrupt 0 (pin 2) and run function
-  // wakeUpNow when pin 2 gets LOW
+  attachInterrupt(0, wakeUpNow, LOW); // use interrupt 0 (pin 2)
 
   sleep_mode();            // here the device is actually put to sleep!!
   // THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
